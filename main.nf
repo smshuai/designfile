@@ -3,16 +3,19 @@ def helpMessage() {
     log.info"""
     Usage:
     The typical command for running the pipeline is as follows:
-    nextflow run main.nf --s3_location  's3://lifebit-featured-datasets/IGV/' --output_file design_file.csv --stage_files
+    nextflow run main.nf --step collect --glob '**/results/**/bin/LP*' --s3_location  's3://lifebit-featured-datasets/IGV/' --output_file design_file.csv
+    nextflow run main.nf --step stage  --desgin design_file.csv
     Mandatory arguments:
 
 
     """.stripIndent()
 }
 
-if (!params.output_file.endsWith('csv')) exit 1, "You have specified the --output_file to be '${params.output_file}', which does not indicate a comma sepearated file.\nPlease specify an output file name with --output_file that ends with .csv"
+if (params.step == 'collect') {
+    
+    if (!params.output_file.endsWith('csv')) exit 1, "You have specified the --output_file to be '${params.output_file}', which does not indicate a comma sepearated file.\nPlease specify an output file name with --output_file that ends with .csv"
 
-Channel.fromPath("${params.s3_location}/**/*")
+    Channel.fromPath("${params.s3_location}/${params.glob}")
        .map { it -> [ file(it).baseName, "s3:/"+it] }
        .groupTuple(by:0)
        .set { ch_files }
@@ -25,8 +28,10 @@ Channel.fromPath("${params.s3_location}/**/*")
 
     output:
     file "${name}.csv" into ch_rows
+
     """
-    echo "${name},${s3_file.collect {"$it"}.join(',')}" > ${name}.csv
+    # ! Only the first file is used for samples with multiple files
+    echo "${name},${s3_file.collect {"$it"}[0]}" > ${name}.csv
     cat ${name}.csv
     """
     }
@@ -46,8 +51,9 @@ Channel.fromPath("${params.s3_location}/**/*")
     cat header.csv body.csv > ${params.output_file}
     """
     }
+}
 
-if (params.stage_files) {
+if (params.step == 'stage') {
 
     ch_design_file
         .splitCsv(sep: ',', skip: 1)
