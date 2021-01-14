@@ -49,10 +49,10 @@ Channel.fromPath("${params.s3_location}/**/*")
 
 if (params.stage_files) {
 
-    ch_main_files
+    ch_design_file
         .splitCsv(sep: ',', skip: 1)
         .map { name, main_file -> [ name, file(main_file) ] }
-        .set { ch_design_file }
+        .set { ch_main_files }
 
     process stage_main_files {
     tag "id:${name}"
@@ -73,11 +73,6 @@ if (params.stage_files) {
     mv ${name} ./files/
     """
     }
-
-    ch_main_files_lists
-        .concat(ch_indices_only_lists)
-        .concat(ch_completed_file_sets_list)
-        .set { ch_checksums }
 
     process collect_checksums {
     tag "id:${name}"
