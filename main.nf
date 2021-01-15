@@ -5,8 +5,6 @@ def helpMessage() {
     The typical command for running the pipeline is as follows:
     nextflow run main.nf --step collect --glob '**/results/**/bin/LP*' --s3_location  's3://lifebit-featured-datasets/IGV/' --output_file design_file.csv
     nextflow run main.nf --step stage  --desgin design_file.csv
-    Mandatory arguments:
-
 
     """.stripIndent()
 }
@@ -54,13 +52,13 @@ if (params.step == 'collect') {
 }
 
 if (params.step == 'stage') {
-    if (params.design) {
-        Channel.fromPath(params.design)
-            .splitCsv(skip: 1)
-            .map { row -> file(file[1]) }
-            .collect()
-            .set { ch_files }
-    }
+
+    Channel
+        .fromPath(params.design)
+        .splitCsv(skip: 1)
+        .map { row -> file(row[1]) }
+        .collect()
+        .set { ch_files }
 
     process stage_bins {
         publishDir "results/"
