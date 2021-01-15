@@ -64,6 +64,7 @@ if (params.step == 'stage') {
     process stage_main_files {
     tag "id:${name}"
     publishDir "results/staged/", pattern: "files/*"
+    maxForks 30
 
     input:
     set val(name), file(file_path) from ch_main_files
