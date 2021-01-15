@@ -57,27 +57,30 @@ if (params.step == 'stage') {
     if (params.design) {
         Channel.fromPath(params.design)
             .splitCsv(sep: ',', skip: 1)
-            .map { name, main_file -> [ name, file(main_file) ] }
-            .set { ch_main_files }
+            .map { name, file -> file(file) }
+            .collect()
+            .set { ch_files }
     }
 
-    process stage_main_files {
-    tag "id:${name}"
-    publishDir "results/"
-    echo true
-    errorStrategy 'ignore'
-    maxForks 70
+    process stage_bins {
+        publishDir "results/"
+        echo true
 
-    input:
-    set val(name), file(file_path) from ch_main_files
-
-    output:
-    file("files/${name}")
-
-    script:
-    """
-    mkdir -p files
-    mv ${name} ./files/
-    """
+        input:
+            path files from ch_files
+      
+        output:
+            path 'file/'
+      
+        shell:
+        '''
+        ls ./ > all_files
+        mkdir -p file
+        cat ./all_files | while read f
+        do
+            mv $f file/
+        done
+        rm file/all_files
+        '''
     }
 }
