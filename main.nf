@@ -63,8 +63,11 @@ if (params.step == 'stage') {
 
     process stage_main_files {
     tag "id:${name}"
-    publishDir "results/staged/", pattern: "files/*"
-    maxForks 30
+    publishDir "results/", pattern: "files/*"
+    echo true
+    errorStrategy 'retry'
+    maxRetries 3 
+    maxForks 70
 
     input:
     set val(name), file(file_path) from ch_main_files
@@ -84,7 +87,7 @@ if (params.step == 'stage') {
 
     process collect_checksums {
     tag "id:${name}"
-    publishDir "results/staged/"
+    publishDir "results/"
 
     input:
     file(checksums) from ch_md5sum.collect()
