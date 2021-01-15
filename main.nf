@@ -68,17 +68,19 @@ if (params.step == 'stage') {
             path files from ch_files
       
         output:
-            path 'file/'
+            path 'files/' into ch_filedir
       
         shell:
         '''
+        ls -lL
         ls ./ > all_files
-        mkdir -p file
+        mkdir -p files
         cat ./all_files | while read f
         do
-            mv $f file/
+            mv $f files/
         done
-        rm file/all_files
+        rm files/all_files
+        ls -lL
         '''
     }
 }
