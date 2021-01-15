@@ -68,7 +68,7 @@ if (params.step == 'stage') {
             path files from ch_files
       
         output:
-            path 'files/' into ch_filedir
+            file ("files/") into ch_filedir
       
         shell:
         '''
