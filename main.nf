@@ -54,22 +54,23 @@ if (params.step == 'collect') {
 }
 
 if (params.step == 'stage') {
-
-    ch_design_file
-        .splitCsv(sep: ',', skip: 1)
-        .map { name, main_file -> [ name, file(main_file) ] }
-        .set { ch_main_files }
+    if (params.design) {
+        Channel.fromPath(params.design)
+            .splitCsv(sep: ',', skip: 1)
+            .map { name, main_file -> [ name, file(main_file) ] }
+            .set { ch_main_files }
+    }
 
     process stage_main_files {
     tag "id:${name}"
-    publishDir "results/staged/"
+    publishDir "results/staged/", pattern: "files/*"
 
     input:
     set val(name), file(file_path) from ch_main_files
 
     output:
-    file("md5sums/${name}_md5sum.txt") into ch_md5sum
-    file("files/${name}") into ch_files
+    file("md5sums/${name}_md5sum.txt") into ch_md5sums
+    file("files/${name}")
 
     script:
     """
