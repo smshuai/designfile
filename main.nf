@@ -56,8 +56,8 @@ if (params.step == 'collect') {
 if (params.step == 'stage') {
     if (params.design) {
         Channel.fromPath(params.design)
-            .splitCsv(sep: ',', skip: 1)
-            .map { name, file -> file(file) }
+            .splitCsv(skip: 1)
+            .map { row -> file(file[1]) }
             .collect()
             .set { ch_files }
     }
