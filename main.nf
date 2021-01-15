@@ -69,7 +69,7 @@ if (params.step == 'stage') {
     set val(name), file(file_path) from ch_main_files
 
     output:
-    file("md5sums/${name}_md5sum.txt") into ch_md5sums
+    file("md5sums/${name}_md5sum.txt") into ch_md5sum
     file("files/${name}")
 
     script:
