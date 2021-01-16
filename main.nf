@@ -84,3 +84,30 @@ if (params.step == 'stage') {
         '''
     }
 }
+
+if (params.step == 'stage_folder') {
+
+    Channel
+        .fromPath(params.design)
+        .splitText()
+        .set { ch_dirs }
+    
+    process stage_folder {
+        publishDir "results/"
+        echo true
+
+        input:
+            path dir from ch_dirs
+      
+        output:
+            file ("files/*") into ch_filedir
+      
+        
+        """
+        ls -lL
+        mkdir -p files
+        mv $dir/* files
+        ls -lL
+        """
+    }
+}
