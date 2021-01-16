@@ -100,13 +100,13 @@ if (params.step == 'stage_folder') {
             path dir from ch_dirs
       
         output:
-            file ("files/*") into ch_filedir
+            file ("collection/*") into ch_filedir
       
         
         """
         ls -lL
-        mkdir -p files
-        mv $dir/* files
+        mkdir -p collection
+        mv $dir/* collection/
         ls -lL
         """
     }
