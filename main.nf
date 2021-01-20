@@ -68,7 +68,7 @@ if (params.step == 'stage') {
             path files from ch_files
       
         output:
-            file ("files/*") into ch_filedir
+            file ("files")
       
         shell:
         '''
@@ -80,6 +80,30 @@ if (params.step == 'stage') {
             mv $f files/
         done
         rm files/all_files
+        ls -lL
+        '''
+    }
+}
+
+if (params.step == 'stage_file') {
+    
+    Channel
+        .fromPath(params.design)
+        .splitText()
+        .set { ch_files }
+
+    process stage_bins {
+        publishDir "results/", mode: "move"
+        echo true
+
+        input:
+            path myfile from ch_files
+      
+        output:
+            path "$myfile"
+      
+        shell:
+        '''
         ls -lL
         '''
     }
@@ -100,7 +124,7 @@ if (params.step == 'stage_folder') {
             path dir from ch_dirs
       
         output:
-            file ("collection/*") into ch_filedir
+            file ("collection")
       
         
         """
