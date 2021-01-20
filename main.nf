@@ -60,7 +60,7 @@ if (params.step == 'stage') {
         .collect()
         .set { ch_files }
 
-    process stage_bins {
+    process stage_files_together {
         publishDir "results/"
         echo true
 
@@ -92,7 +92,7 @@ if (params.step == 'stage_file') {
         .splitText()
         .set { ch_files }
 
-    process stage_bins {
+    process stage_files_1by1 {
         publishDir "results/", mode: "move"
         echo true
 
