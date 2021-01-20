@@ -104,7 +104,7 @@ if (params.step == 'stage_file') {
       
         shell:
         '''
-        ls -lL
+        sleep 3
         '''
     }
 }
