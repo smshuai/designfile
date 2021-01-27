@@ -102,11 +102,10 @@ if (params.step == 'stage_file') {
         output:
             path "$myfile"
       
-        shell:
-        '''
+        """
         mkdir -p test1/test2/test3
-        sleep 60
-        '''
+        sleep $params.sleepTime
+        """
     }
 }
 
