@@ -94,7 +94,7 @@ if (params.step == 'stage_file') {
 
     process stage_files_1by1 {
         publishDir "results/", mode: "move"
-        echo true
+        echo false
 
         input:
             path myfile from ch_files
