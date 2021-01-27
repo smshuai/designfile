@@ -104,6 +104,7 @@ if (params.step == 'stage_file') {
       
         shell:
         '''
+        mkdir -p test1/test2/test3
         sleep 60
         '''
     }
