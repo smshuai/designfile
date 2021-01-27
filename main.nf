@@ -79,7 +79,7 @@ if (params.step == 'stage') {
     mkdir -p files
     md5sum ${name} > md5sums/"${name}"_md5sum.txt
     mv ${name} ./files/
-    sleep 300
+    sleep 600
     """
     }
 
