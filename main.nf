@@ -64,6 +64,7 @@ if (params.step == 'stage') {
     process stage_main_files {
     tag "id:${name}"
     publishDir "results/staged/", pattern: "files/*"
+    maxForks 60
 
     input:
     set val(name), file(file_path) from ch_main_files
@@ -78,6 +79,7 @@ if (params.step == 'stage') {
     mkdir -p files
     md5sum ${name} > md5sums/"${name}"_md5sum.txt
     mv ${name} ./files/
+    sleep 300
     """
     }
 
