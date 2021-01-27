@@ -63,39 +63,23 @@ if (params.step == 'stage') {
 
     process stage_main_files {
     tag "id:${name}"
-    publishDir "results/staged/", pattern: "files/*"
-    maxForks 60
+    publishDir "results/staged/"
+    maxForks 44
 
     input:
     set val(name), file(file_path) from ch_main_files
 
     output:
-    file("md5sums/${name}_md5sum.txt") into ch_md5sum
+    file("md5sums/${name}_md5sum.txt")
     file("files/${name}")
 
     script:
     """
     mkdir -p md5sums
     mkdir -p files
-    md5sum ${name} > md5sums/"${name}"_md5sum.txt
-    mv ${name} ./files/
+    md5sum ${file_path} > md5sums/${name}_md5sum.txt
+    mv ${file_path} ./files/
     sleep 600
-    """
-    }
-
-    process collect_checksums {
-    tag "id:${name}"
-    publishDir "results/staged/"
-
-    input:
-    file(checksums) from ch_md5sum.collect()
-
-    output:
-    file("all_checksums.txt")
-
-    script:
-    """
-    cat *txt > all_checksums.txt
     """
     }
 }
