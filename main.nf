@@ -104,7 +104,7 @@ if (params.step == 'stage_file') {
       
         shell:
         '''
-        sleep 600
+        sleep 60
         '''
     }
 }
