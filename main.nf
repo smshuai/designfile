@@ -89,22 +89,23 @@ if (params.step == 'stage_file') {
     
     Channel
         .fromPath(params.design)
-        .splitText()
+        .splitText(){ it.trim() }
         .set { ch_files }
 
     process stage_files_1by1 {
-        publishDir "results/", mode: "move"
+        publishDir "md5sums/", mode: "move", pattern: '*.md5'
+        publishDir "files/", mode: "move"
         echo false
 
         input:
             path myfile from ch_files
       
         output:
-            path "$myfile"
+            path "${myfile}"
+            path "${myfile}.md5"
       
         """
-        mkdir -p test1/test2/test3
-        sleep $params.sleepTime
+        md5sum ${myfile} > ${myfile}.md5
         """
     }
 }
