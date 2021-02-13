@@ -136,3 +136,29 @@ if (params.step == 'stage_folder') {
         """
     }
 }
+
+if (params.step == 'tabix_file') {
+    
+    Channel
+        .fromPath(params.design)
+        .splitText(){ it.trim() }
+        .set { ch_files }
+
+    process tabix_file {
+        publishDir "md5sums/", mode: "move", pattern: '*.md5'
+        publishDir "files/", mode: "move", pattern: '*.gz*'
+        echo false
+
+        input:
+            path myfile from ch_files
+      
+        output:
+            path "${myfile}*"
+      
+        """
+        bgzip ${myfile}
+        md5sum ${myfile}.gz > ${myfile}.md5
+        tabix -p bed ${myfile}.gz
+        """
+    }
+}
